@@ -204,8 +204,6 @@ class RPCRelayServer(Thread):
                             self.target.scheme, self.target.netloc, authenticateMessage['domain_name'].decode('ascii'),
                             authenticateMessage['user_name'].decode('ascii')))
 
-                    # Log this target as processed for this client
-                    self.server.config.target.logTarget(self.target, True, self.auth_user)
 
                     ntlm_hash_data = outputToJohnFormat(self.challengeMessage['challenge'],
                                                         authenticateMessage['user_name'],
@@ -217,6 +215,9 @@ class RPCRelayServer(Thread):
                         writeJohnOutputToFile(ntlm_hash_data['hash_string'], ntlm_hash_data['hash_version'],
                                               self.server.config.outputFile)
 
+                    # Log this target as processed for this client
+                    self.server.config.target.logTarget(self.target, True, self.auth_user)
+                    
                     self.do_attack()
                     return self.send_error(MSRPC_STATUS_CODE_RPC_S_ACCESS_DENIED)
                 except Exception as e:
